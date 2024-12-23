@@ -2,13 +2,13 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.ucp2.entity.MataKuliah
 
 @Dao
 interface MataKuliahDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMataKuliah(mataKuliah: MataKuliah)
 
     @Update
@@ -21,5 +21,6 @@ interface MataKuliahDao {
     fun getAllMataKuliah(): LiveData<List<MataKuliah>>
 
     @Query("SELECT * FROM mata_kuliah WHERE kode = :kode")
-    fun getMataKuliahByKode(kode: String): MataKuliah
+    fun getMataKuliahByKode(kode: String): LiveData<MataKuliah>
 }
+
