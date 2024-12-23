@@ -1,8 +1,7 @@
 import androidx.lifecycle.LiveData
-import com.example.ucp2.entity.MataKuliah
 
 class MataKuliahRepository(private val mataKuliahDao: MataKuliahDao) {
-
+    val allMataKuliah: LiveData<List<MataKuliah>> = mataKuliahDao.getAllMataKuliah()
 
     suspend fun insert(mataKuliah: MataKuliah) {
         mataKuliahDao.insertMataKuliah(mataKuliah)
@@ -14,5 +13,9 @@ class MataKuliahRepository(private val mataKuliahDao: MataKuliahDao) {
 
     suspend fun delete(mataKuliah: MataKuliah) {
         mataKuliahDao.deleteMataKuliah(mataKuliah)
+    }
+
+    fun getMataKuliahByKode(kode: String): LiveData<MataKuliah> {
+        return mataKuliahDao.getMataKuliahByKode(kode)
     }
 }
