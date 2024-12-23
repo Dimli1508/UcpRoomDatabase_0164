@@ -1,13 +1,14 @@
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.ucp2.entity.Dosen
 
 @Dao
 interface DosenDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDosen(dosen: Dosen)
 
     @Query("SELECT * FROM dosen")
-    suspend fun getAllDosen(): List<Dosen>
+    fun getAllDosen(): LiveData<List<Dosen>>
 }
