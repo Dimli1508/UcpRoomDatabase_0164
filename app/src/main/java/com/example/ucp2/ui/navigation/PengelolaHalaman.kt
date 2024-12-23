@@ -1,5 +1,6 @@
 package com.example.ucp2.ui.navigation
 
+import MataKuliah
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -13,129 +14,71 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.ucp2.ui.dosen.DosenCreateView
+import com.example.ucp2.ui.dosen.DosenListView
+import com.example.ucp2.ui.mainmenu.MainMenu
+import com.example.ucp2.ui.mata_kuliah.MataKuliahCreateView
+import com.example.ucp2.ui.mata_kuliah.MataKuliahDetailView
+import com.example.ucp2.ui.mata_kuliah.MataKuliahListView
+import com.example.ucp2.ui.mata_kuliah.MataKuliahUpdateView
+import com.example.ucp2.ui.viewmodel.MataKuliahViewModel
 
 @Composable
-fun PengelolaHalaman(
-    navController: NavHostController = rememberNavController(),
-    modifier: Modifier = Modifier
-) {
-    NavHost(
-        navController = navController,
-        startDestination = "menu",
-        modifier = modifier.fillMaxSize().background(Color.White)
-    ) {
-        composable("menu") {
-            MenuScreen(navController)
-        }
+fun PengelolaHalaman(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "main_menu") {
+        composable("main_menu") {
+            MainMenu(navController)        }
         composable("dosen") {
-            DosenScreen()
-        }
+            DosenListView(navController)         }
         composable("mata_kuliah") {
-            MataKuliahScreen()
-        }
-    }
-}
-
-@Composable
-fun MenuScreen(navController: NavController) {
-    var inputText by remember { mutableStateOf(TextFieldValue("")) }
-    var errorMessage by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .background(Color.White),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Pilih Menu", color = Color.Black)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                if (inputText.text.isEmpty()) {
-                    errorMessage = "Input tidak boleh kosong untuk memilih Dosen!"
-                } else {
-                    errorMessage = ""
-                    navController.navigate("dosen")
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+            MataKuliahListView(navController)         }
+        composable("dosen_create") {
+            DosenCreateView(navController)      }
+        composable("mata_kuliah_create") {
+            MataKuliahCreateView(navController)     }
+        composable(
+            "mata_kuliah_detail/{kode}",
+            arguments = listOf(navArgument("kode") { type = NavType.StringType })
         ) {
-            Text("Dosen")
-        }
-
-        Button(
-            onClick = {
-                if (inputText.text.isEmpty()) {
-                    errorMessage = "Input tidak boleh kosong untuk memilih Mata Kuliah!"
-                } else {
-                    errorMessage = ""
-                    navController.navigate("mata_kuliah")
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        ) {
-            Text("Mata Kuliah")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(text = "Masukkan Input:", color = Color.Black)
-        BasicTextField(
-            value = inputText,
-            onValueChange = { inputText = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .background(Color.LightGray)
-        )
-
-        if (errorMessage.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = errorMessage, color = Color.Red)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            if (inputText.text.isEmpty()) {
-                errorMessage = "Input tidak boleh kosong!"
-            } else {
-                errorMessage = ""
-                // Lakukan sesuatu dengan inputText
+            val kode = it.arguments?.getString("kode")
+            if (kode != null) {
+                MataKuliahDetailView(
+                    mataKuliah = MataKuliah(
+                        kode = kode,
+                        nama = "",
+                        sks = 0,
+                        semester = "",
+                        jenis = "",
+                        dosenPengampu = ""
+                    ),
+                    onBack = { navController.popBackStack() }
+                )
             }
-        }) {
-            Text("Submit")
         }
-    }
-}
-
-@Composable
-fun DosenScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Halaman Dosen", color = Color.Black)
-    }
-}
-
-@Composable
-fun MataKuliahScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Halaman Mata Kuliah", color = Color.Black)
+        composable(
+            "mata_kuliah_update/{kode}",
+            arguments = listOf(navArgument("kode") { type = NavType.StringType })
+        ) {
+            val kode = it.arguments?.getString("kode")
+            if (kode != null) {
+                MataKuliahUpdateView(
+                    navController = navController,
+                    mataKuliahViewModel = MataKuliahViewModel(navController),
+                    mataKuliah = MataKuliah(
+                        kode = kode,
+                        nama = "",
+                        sks = 0,
+                        semester = "",
+                        jenis = "",
+                        dosenPengampu = ""
+                    )
+                )
+            }
+        }
     }
 }

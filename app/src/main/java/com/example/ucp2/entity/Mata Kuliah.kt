@@ -6,7 +6,7 @@ data class MataKuliah(
     @PrimaryKey val kode: String,
     val nama: String,
     val sks: Int,
-    val semester: Int,
+    val semester: String,
     val jenis: String,
     val dosenPengampu: String
 )
