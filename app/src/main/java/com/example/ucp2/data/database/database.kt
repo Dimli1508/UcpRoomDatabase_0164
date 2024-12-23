@@ -2,23 +2,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.ucp2.entity.Dosen
-import com.example.ucp2.entity.MataKuliah
 
 @Database(entities = [Dosen::class, MataKuliah::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun dosenDao(): DosenDao
-    abstract fun mataKuliahDao(): MataKuliahDao
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
+abstract class database : RoomDatabase() {
+    abstract fun DosenDAO(): DosenDao
+    abstract fun MataKuliahDao(): MataKuliahDao
 
-        fun getDatabase(context: Context): AppDatabase {
+    companion object {
+        @Volatile private var INSTANCE: database? = null
+
+        fun getDatabase(context: Context): database {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    AppDatabase::class.java,
-                    "app_database"
+                    database::class.java,
+                    "database"
                 ).build()
                 INSTANCE = instance
                 instance
@@ -26,3 +24,4 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+
