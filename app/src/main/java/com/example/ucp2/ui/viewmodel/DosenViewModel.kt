@@ -2,16 +2,15 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.example.ucp2.entity.Dosen
 import kotlinx.coroutines.launch
 
 class DosenViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: RepositoryDosen
+    private val repository: DosenRepository
     val allDosen: LiveData<List<Dosen>>
 
     init {
-        val dosenDao = AppDatabase.getDatabase(application).dosenDao()
-        repository = RepositoryDosen(dosenDao)
+        val dosenDao = database.getDatabase(application).DosenDAO()
+        repository = DosenRepository(dosenDao)
         allDosen = repository.allDosen
     }
 
@@ -19,3 +18,4 @@ class DosenViewModel(application: Application) : AndroidViewModel(application) {
         repository.insert(dosen)
     }
 }
+
